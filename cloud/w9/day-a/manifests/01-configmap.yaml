@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+  namespace: default
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+data:
+  APP_COLOR: "deepskyblue"
+  APP_MESSAGE: "Xin chào từ GitOps & ArgoCD Sync Waves!"
