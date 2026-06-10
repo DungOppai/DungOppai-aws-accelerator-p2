@@ -1,0 +1,16 @@
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+.terraform.lock.hcl
+crash.log
+
+# Private keys / credentials
+private_key.pem
+temp_ec2_key_*.pem
+
+# Large binaries (terraform executable)
+bin/terraform.exe
+bin/*.exe
+bin/*.zip
+bin/*.txt
