@@ -1,0 +1,39 @@
+name: GitOps CI/CD
+
+on:
+  pull_request:
+    paths:
+      - 'cloud/w9/day-a/manifests/**'
+  push:
+    branches:
+      - main
+    paths:
+      - 'cloud/w9/day-a/manifests/**'
+
+jobs:
+  validate-manifests:
+    name: Validate Manifests (Plan-on-PR)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup Kubeconform
+        run: |
+          wget https://github.com/yannh/kubeconform/releases/download/v0.6.1/kubeconform-linux-amd64.tar.gz
+          tar -xf kubeconform-linux-amd64.tar.gz
+          sudo mv kubeconform /usr/local/bin/
+
+      - name: Validate YAML Syntax & Kubernetes Schemas
+        run: |
+          kubeconform -summary -strict cloud/w9/day-a/manifests/
+
+  deploy-gitops:
+    name: Sync ArgoCD (Apply-on-Merge)
+    needs: validate-manifests
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Notify ArgoCD to Sync
+        run: |
+          echo "Changes merged to main. ArgoCD will automatically sync the resources in the cluster."
